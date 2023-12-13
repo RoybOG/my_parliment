@@ -1,0 +1,10 @@
+{
+  "name": "React Chrome Extension",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "content_scripts": [],
+  "action": {
+    "default_title": "MyParliment",
+    "default_popup": "/popup/index.html"
+  }
+}
