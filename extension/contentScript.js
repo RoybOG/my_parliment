@@ -43,18 +43,24 @@ async function checkParticipant() {
   );
 }
 
-function setupMuteObserver() {
+function setupMuteObserver(target) {
   const config = {
-    subtree: true,
+    attribute: true,
     attributeOldValue: true,
-    attributeFilter: ["data-is-muted"],
+    //attributeFilter: ["data-is-muted"],
   };
 
   const observer = new MutationObserver(async (l) => {
     console.log(l);
+    // observer.disconnect();
     await checkParticipant();
+    /* await setTimeout(async () => { //In slower computers this can be exploited. I prefer double reads(that anyway with be alot becuase they will try a lot to press the mute so I anyways need to find a a way to cache reads)
+      console.log("g");
+      observer.observe(target, config);
+    }, 70);*/
   });
-  observer.observe(getMuteButton(), config);
+
+  observer.observe(target, config);
 
   return observer;
 }
@@ -64,12 +70,11 @@ async function setup() {
   console.log();
 
   console.log(isParticipantHost());
-  let { participantDetails, isHost } = await extractParticipantDetails();
-
-  if (participantDetails) {
-    // console.log(await setUpParticipantDetails(participantDetails));
-    // await checkParticipant();
-    // setupMuteObserver();
+  let { participantDetails, isHost, muteSymbol } =
+    await extractParticipantDetails();
+  console.log(participantDetails);
+  console.log(muteSymbol);
+  if (participantDetails && muteSymbol) {
     await chrome.runtime.sendMessage(
       { type: "COOKIES-GET", details: {} },
       (res) => {
@@ -78,8 +83,9 @@ async function setup() {
     );
     console.log(participantDetails);
     await checkParticipant();
-    setupMuteObserver();
+    setupMuteObserver(muteSymbol);
   } else {
+    alert("יש בעיה בדף שלכם, כדאי לטעון מחדש");
   }
 }
 

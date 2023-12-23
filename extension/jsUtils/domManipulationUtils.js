@@ -20,15 +20,15 @@ async function extractParticipantDetails() {
         participentList.querySelector('div[role="button"]').click();
       }
     );
-
+    let youItem = youLabel.closest('div[role="listitem"]');
     return {
       participantDetails: {
-        username: youLabel.previousSibling.textContent,
-        googleID: youLabel
-          .closest('div[role="listitem"]')
-          .getAttribute("data-participant-id"),
+        username: youLabel.previousSibling?.textContent,
+        profileLink: youItem.querySelector("img")?.src,
+        googleID: youItem.getAttribute("data-participant-id"),
       },
       isHost: isParticipantHost(),
+      muteSymbol: youItem.querySelector('div[jscontroller="mUJV5"]'),
     };
   } catch (err) {
     alert("This page is corrupted, can you please refresh the page?");
